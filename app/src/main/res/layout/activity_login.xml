@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/mainRelativeLayout">
+
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/iniciar_sesi_n" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="260dp"
+        android:orientation="vertical"
+        android:padding="60dp">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="70dp"
+            android:layout_gravity="center"
+            android:text="AQUAGROW"
+            android:textColor="#000000"
+            android:textSize="50dp"
+            android:fontFamily="monospace"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/redondear_edittext"
+            android:padding="10dp"
+            android:textSize="20dp"
+            android:hint="CORREO"
+            android:layout_marginTop="50dp"
+            android:textAlignment="center"
+            android:fontFamily="sans-serif-medium" />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/redondear_edittext"
+            android:textAlignment="center"
+            android:hint="CONTRASEÑA"
+            android:inputType="textPassword"
+            android:textSize="20dp"
+            android:padding="10dp"
+            android:layout_marginTop="30dp"
+            android:fontFamily="sans-serif-medium"/>
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:text="Iniciar Sesión"
+            android:textAlignment="center"
+            style="@style/MyButtonStyle"
+            android:padding="10dp"
+            android:textColor="#FFFFFF"
+            android:fontFamily="sans-serif-medium"/>
+
+
+    </LinearLayout>
+
+
+
+</RelativeLayout>

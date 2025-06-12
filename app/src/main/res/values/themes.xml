@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.DisenioAPP" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="MyButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/azul_claro</item> <!-- Color de fondo -->
+        <item name="cornerRadius">12dp</item> <!-- Bordes redondeados -->
+    </style>
+</resources>
