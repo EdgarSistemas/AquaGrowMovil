@@ -1,4 +1,4 @@
-package com.example.disenioapp
+package com.example.aquagrow
 
 import org.junit.Test
 
