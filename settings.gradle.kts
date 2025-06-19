@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "DisenioAPP"
+rootProject.name = "AquaGrowMovil"
 include(":app")
  
