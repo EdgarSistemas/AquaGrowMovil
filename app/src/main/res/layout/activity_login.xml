@@ -18,7 +18,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="260dp"
+        android:layout_marginTop="200dp"
         android:orientation="vertical"
         android:padding="60dp">
 
@@ -36,6 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/redondear_edittext"
+            android:inputType="textEmailAddress"
             android:padding="10dp"
             android:textSize="20sp"
             android:hint="CORREO"
@@ -60,17 +61,18 @@
             android:id="@+id/btnIniciarSesion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="100dp"
             android:text="Iniciar Sesión"
             android:textAlignment="center"
             style="@style/MyButtonStyle"
             android:padding="10dp"
             android:textColor="#FFFFFF"
             android:fontFamily="sans-serif-medium"/>
-
-
     </LinearLayout>
-
-
-
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
 </RelativeLayout>
