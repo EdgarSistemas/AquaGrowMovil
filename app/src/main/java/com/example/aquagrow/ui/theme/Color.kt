@@ -1,4 +1,4 @@
-package com.example.disenioapp.ui.theme
+package com.example.aquagrow.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
