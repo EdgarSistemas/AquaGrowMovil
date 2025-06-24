@@ -85,6 +85,7 @@ class MainActivity : AppCompatActivity() {
             "grafica" -> R.drawable.ic_dashboard
             "usuarios" -> R.drawable.ic_users
             // agregar mas icocno para los demas modulos
+            "plantas" -> R.drawable.ic_plant
             else -> R.drawable.ic_fish
         }
 
