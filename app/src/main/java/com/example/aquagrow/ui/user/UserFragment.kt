@@ -19,8 +19,8 @@ class UserFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_user, container, false)
 
         // Acceder a vistas con findViewById (nota: es necesario llamar a findViewById en la vista raíz)
-        val textView = view.findViewById<TextView>(R.id.tvTitle)
-        textView.text = "Panel de Usuarios"
+        //val textView = view.findViewById<TextView>(R.id.tvTitle)
+        //textView.text = "Panel de Usuarios"
 
         return view
     }

@@ -1,10 +1,12 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:padding="16dp">
+    tools:context=".ui.user.list.UserListFragment">
 
+    <!-- RecyclerView para mostrar la lista de usuarios -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvUsers"
         android:layout_width="match_parent"
@@ -12,6 +14,7 @@
         android:padding="8dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
+    <!-- Botón flotante para agregar nuevo usuario -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddUser"
         android:layout_width="wrap_content"
@@ -21,6 +24,7 @@
         android:src="@drawable/ic_fish"
         app:backgroundTint="@color/teal_200" />
 
+    <!-- Indicador de carga -->
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
@@ -28,12 +32,13 @@
         android:layout_gravity="center"
         android:visibility="gone" />
 
+    <!-- Mensaje cuando no hay usuarios -->
     <TextView
         android:id="@+id/tvEmptyState"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:text="No se que va aquí"
+        android:text="@string/no_users_found"
         android:visibility="gone" />
 
-</LinearLayout>
+</FrameLayout>

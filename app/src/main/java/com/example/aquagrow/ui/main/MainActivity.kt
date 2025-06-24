@@ -18,6 +18,7 @@ import com.example.aquagrow.ui.dashboard.DashboardFragment
 import com.example.aquagrow.ui.main.dashboard.UserFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import android.view.MenuItem
+import com.example.aquagrow.ui.user.list.UserListFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -104,7 +105,7 @@ class MainActivity : AppCompatActivity() {
     private fun loadFragmentForPermission(permission: Permission) {
         val fragment = when (permission.nombre_modulo) {
             "Dashboard" -> DashboardFragment()
-            "Usuarios" -> UserFragment()
+            "Usuarios" -> UserListFragment()
             // agregar mas fragments para os demas modulos
             else -> DashboardFragment()
         }
