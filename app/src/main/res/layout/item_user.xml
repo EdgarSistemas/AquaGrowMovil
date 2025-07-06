@@ -43,7 +43,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:gravity="end"
+            android:gravity="center_horizontal"
             android:orientation="horizontal">
 
             <!-- Botón de editar -->
@@ -52,16 +52,16 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_dashboard" />
+                android:src="@drawable/baseline_colorize_24" />
 
             <!-- Botón de eliminar -->
             <ImageButton
                 android:id="@+id/btnDeleteUser"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="16dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_plant" />
+                android:src="@drawable/baseline_delete_24" />
 
         </LinearLayout>
     </LinearLayout>

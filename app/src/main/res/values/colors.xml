@@ -8,4 +8,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="azul_claro">#0097b2</color>
+    <color name="success">#4CAF50</color>
+    <color name="error">#F44336</color>
+    <color name="primary">#3F51B5</color>
+    <color name="color_boton">#125467</color>
+    <color name="gray_500">#9E9E9E</color>
 </resources>

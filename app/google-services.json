@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "903194877326",
+    "project_id": "agrizor-iot",
+    "storage_bucket": "agrizor-iot.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:903194877326:android:236d0f9ae12e7591ea18df",
+        "android_client_info": {
+          "package_name": "com.example.aquagrow"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAd2N3rDUS_lezeXAUF7eJkostZyRTlFec"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

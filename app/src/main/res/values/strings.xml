@@ -4,9 +4,11 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
-    <string name="no_users_found">No se encontraron usuarios</string>
+    <string name="no_user_found">No se encontraron usuarios</string>
     <string name="error_loading_users">Error al cargar usuarios</string>
     <string name="user_deleted">Usuario eliminado</string>
     <string name="user_saved">Usuario guardado con éxito</string>
     <string name="error_saving_user">Error al guardar el usuario</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

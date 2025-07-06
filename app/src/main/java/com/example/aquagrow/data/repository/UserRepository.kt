@@ -10,11 +10,12 @@ import com.example.aquagrow.data.model.responses.UserCreUpdDelResponse
 import com.example.aquagrow.data.model.responses.UserInfoResponse
 import com.example.aquagrow.data.remote.api.ApiClient
 import com.example.aquagrow.data.remote.api.services.UserService
+import com.example.aquagrow.data.remote.responses.ApiError
+import com.google.gson.Gson
+import org.json.JSONObject
 import retrofit2.HttpException
 
-class UserRepository (
-    private val userService : UserService = ApiClient.userService
-) {
+class UserRepository (private val userService : UserService = ApiClient.userService) {
     // 1. Obtener tipos de usuario
     suspend fun get_user_types(): List<TypesUserResponse> {
         Log.d("UserRepo", "Obteniendo tipos de usuario")
@@ -96,16 +97,34 @@ class UserRepository (
 
     // 6. Crear nuevo usuario
     suspend fun create_user(request: UserCreateRequest): UserCreUpdDelResponse {
-        Log.d("UserRepo", "Creando nuevo usuario: ${request.usuario}")
+        Log.d("UserRepo", "Creando usuario: ${request.usuario}")
         return try {
             val response = userService.create_user(request)
-            if (!response.isSuccessful) throw HttpException(response)
-            response.body()!!.also {
-                Log.d("UserRepo", "Usuario creado ID: ${it.id_usuario}")
+
+            if (!response.isSuccessful) {
+                val errorBody = response.errorBody()?.string()
+                throw Exception(errorBody ?: "Error desconocido")
             }
+
+            response.body()?.let {
+                if (it.id_usuario != null) {
+                    Log.d("UserRepo", "Usuario creado ID: ${it.id_usuario}")
+                    return it
+                } else {
+                    throw Exception(it.mensaje ?: "Error al crear usuario")
+                }
+            } ?: throw Exception("Respuesta vacía del servidor")
+        } catch (e: ApiError) {
+            // Manejar específicamente el error de la API
+            val errorMessage = try {
+                val json = JSONObject(e.errorBody ?: "{}")
+                json.getString("mensaje")
+            } catch (ex: Exception) {
+                e.message ?: "Error desconocido"
+            }
+            throw Exception(errorMessage)
         } catch (e: Exception) {
-            Log.e("UserRepo", "Error al crear usuario", e)
-            throw e
+            throw Exception(e.message ?: "Error desconocido")
         }
     }
 
@@ -114,11 +133,30 @@ class UserRepository (
         Log.d("UserRepo", "Actualizando usuario ID: ${request.id_usuario}")
         return try {
             val response = userService.update_user(request)
-            if (!response.isSuccessful) throw HttpException(response)
-            response.body()!!.also {
-                Log.d("UserRepo", "Usuario actualizado: ${it.mensaje}")
+            if (!response.isSuccessful) {
+                val errorBody = response.errorBody()?.string()
+                throw Exception(errorBody ?: "Error desconocido")
             }
-        } catch (e: Exception) {
+
+            response.body()?.let {
+                if (it.id_usuario != null) {
+                    Log.d("UserRepo", "Usuario creado ID: ${it.id_usuario}")
+                    return it
+                } else {
+                    throw Exception(it.mensaje ?: "Error al crear usuario")
+                }
+            } ?: throw Exception("Respuesta vacía del servidor")
+        } catch (e: ApiError) {
+            // Manejar específicamente el error de la API
+            val errorMessage = try {
+                val json = JSONObject(e.errorBody ?: "{}")
+                json.getString("mensaje")
+            } catch (ex: Exception) {
+                e.message ?: "Error desconocido"
+            }
+            throw Exception(errorMessage)
+        }
+        catch (e: Exception) {
             Log.e("UserRepo", "Error al actualizar usuario", e)
             throw e
         }
@@ -138,6 +176,4 @@ class UserRepository (
             throw e
         }
     }
-
-
 }

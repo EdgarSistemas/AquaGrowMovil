@@ -1,18 +1,62 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="8dp"
+    tools:context=".ui.dashboard.DashboardFragment">
 
-    <TextView
-        android:id="@+id/tvTitle"
+    <!-- Contenedor para RecyclerView y estado vacío -->
+    <FrameLayout
+        android:id="@+id/flListUnit"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/fabRefreshSpacer">
+
+        <!-- RecyclerView -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvUnits"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="2dp"
+            android:clipToPadding="false"/>
+
+        <!-- Estado vacío -->
+        <TextView
+            android:id="@+id/tvEmptyState"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="No se encontraron unidades"
+            android:visibility="gone"/>
+
+        <!-- Indicador de carga -->
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"/>
+    </FrameLayout>
+
+    <!-- Espacio para el botón flotante -->
+    <Space
+        android:id="@+id/fabRefreshSpacer"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:layout_alignParentBottom="true"/>
+
+    <!-- Botón flotante para refrescar datos -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabRefresh"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Dashboard"
-        android:textSize="24sp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="24dp"/>
-
-    <!-- Aquí puedes agregar más elementos de UI para tu dashboard -->
-
-</LinearLayout>
+        android:layout_alignParentEnd="true"
+        android:layout_above="@id/fabRefreshSpacer"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/baseline_refresh_24"
+        app:backgroundTint="@color/color_boton"
+        app:tint="@color/white"/>
+</RelativeLayout>

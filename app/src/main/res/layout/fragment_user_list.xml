@@ -1,44 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="8dp"
     tools:context=".ui.user.list.UserListFragment">
 
-    <!-- RecyclerView para mostrar la lista de usuarios -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvUsers"
+    <!-- Barra de búsqueda -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/searchLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:startIconDrawable="@drawable/baseline_search_24"
+        app:placeholderText="Buscar usuarios..."
+        android:layout_marginBottom="8dp"
+        android:layout_marginHorizontal="10dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etSearch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionSearch"
+            android:inputType="text"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Contenedor para RecyclerView y estado vacío -->
+    <FrameLayout
+        android:id="@+id/flListUser"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="8dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        android:layout_below="@id/searchLayout"
+        android:layout_above="@+id/fabAddUserSpacer">
+
+        <!-- RecyclerView -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvUsers"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="2dp"
+            android:clipToPadding="false"/>
+
+        <!-- Estado vacío -->
+        <TextView
+            android:id="@+id/tvEmptyState"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/no_user_found"
+            android:visibility="gone"/>
+
+        <!-- Indicador de carga -->
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"/>
+    </FrameLayout>
+
+    <!-- Espacio para el botón flotante y evitar que quede detrás del bottom navigation -->
+    <Space
+        android:id="@+id/fabAddUserSpacer"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:layout_alignParentBottom="true"/>
 
     <!-- Botón flotante para agregar nuevo usuario -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddUser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        android:src="@drawable/ic_fish"
-        app:backgroundTint="@color/teal_200" />
-
-    <!-- Indicador de carga -->
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone" />
-
-    <!-- Mensaje cuando no hay usuarios -->
-    <TextView
-        android:id="@+id/tvEmptyState"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="@string/no_users_found"
-        android:visibility="gone" />
-
-</FrameLayout>
+        android:layout_alignParentEnd="true"
+        android:layout_above="@id/fabAddUserSpacer"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/baseline_person_add_24"
+        app:backgroundTint="@color/color_boton"
+        app:tint="@color/white"/>
+</RelativeLayout>

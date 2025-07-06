@@ -5,7 +5,6 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.Menu
 import android.widget.FrameLayout
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -15,10 +14,16 @@ import com.example.aquagrow.R
 import com.example.aquagrow.data.local.SessionManager
 import com.example.aquagrow.data.model.domain.Permission
 import com.example.aquagrow.ui.dashboard.DashboardFragment
-import com.example.aquagrow.ui.main.dashboard.UserFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import android.view.MenuItem
+import android.view.View
 import com.example.aquagrow.ui.user.list.UserListFragment
+import com.google.android.material.snackbar.Snackbar
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
+import android.util.Log
+import com.example.aquagrow.data.repository.UnitRepository
+import com.example.aquagrow.data.remote.mqtt.MqttClientManager
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,8 +32,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        //enableEdgeToEdge()
         setContentView(R.layout.activity_main)
+
+        window.statusBarColor = ContextCompat.getColor(this, R.color.color_boton)
 
         // Inicializar vistas
         fragmentContainer = findViewById(R.id.fragment_container)
@@ -45,7 +52,22 @@ class MainActivity : AppCompatActivity() {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            bottomNavigation.setPadding(0, 0, 0, systemBars.bottom)
             insets
+        }
+
+        lifecycleScope.launch {
+            try {
+                val units = UnitRepository().getUnitsForCurrentUser()
+                units.forEach { unit ->
+                    val dispId = unit.dispositivo?.id_dispositivo ?: return@forEach
+                    val topic = "invernadero/${unit.id_unidad}/$dispId/alert"
+                    MqttClientManager.subscribe(topic)
+                    Log.d("MainActivity", "📡 Subscrito globalmente a $topic")
+                }
+            } catch (e: Exception) {
+                Log.e("MainActivity", "❌ Error al obtener unidades para alertas MQTT", e)
+            }
         }
     }
 
@@ -55,7 +77,6 @@ class MainActivity : AppCompatActivity() {
         // Crear menú dinámico basado en permisos
         val menu = bottomNavigation.menu
         menu.clear()
-
         permissions.forEachIndexed { index, permission ->
             val menuItem = menu.add(
                 Menu.NONE,
@@ -140,5 +161,13 @@ class MainActivity : AppCompatActivity() {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         })
         finish()
+    }
+
+    fun showSnackbar(message: String) {
+        val rootView = findViewById<View>(android.R.id.content)
+        Snackbar.make(rootView, message, Snackbar.LENGTH_SHORT)
+            .setBackgroundTint(ContextCompat.getColor(this, R.color.success))
+            .setTextColor(ContextCompat.getColor(this, R.color.white))
+            .show()
     }
 }
