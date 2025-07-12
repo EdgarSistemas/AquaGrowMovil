@@ -1,11 +1,16 @@
 package com.example.aquagrow.ui.dashboard
 
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.aquagrow.data.local.SessionManager
 import com.example.aquagrow.data.model.domain.Telemetry
+import com.example.aquagrow.data.model.domain.Unit
 import com.example.aquagrow.data.remote.mqtt.MqttClientManager
 import com.example.aquagrow.data.repository.UnitRepository
+import com.example.aquagrow.ui.assignUnit.AdminUnitViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -14,6 +19,9 @@ import org.json.JSONObject
 class DashboardViewModel(
     private val repository: UnitRepository = UnitRepository()
 ) : ViewModel() {
+
+    private val _selectedUnit = MutableLiveData<com.example.aquagrow.data.model.domain.Unit?>()
+    val selectedUnit: LiveData<Unit?> = _selectedUnit
 
     private val _state = MutableStateFlow<DashboardState>(DashboardState.Loading)
     val state: StateFlow<DashboardState> = _state
@@ -33,7 +41,13 @@ class DashboardViewModel(
         viewModelScope.launch {
             try {
                 _state.value = DashboardState.Loading
-                val units = repository.getUnitsForCurrentUser()
+
+                val tipoUsuario = SessionManager.getUserType()
+                val units = if (tipoUsuario == "Administrador") {
+                    repository.getAllUnitsWithZoneTankUser()
+                } else {
+                    repository.getUnitsForCurrentUser()
+                }
 
                 if (units.isEmpty()) {
                     _state.value = DashboardState.Empty
@@ -41,7 +55,7 @@ class DashboardViewModel(
                     _state.value = DashboardState.Success(units)
 
                     if (!isSubscribed) {
-                        // Suscribirse a todos los topics MQTT de cada unidad
+                        // Suscribirse a los topics MQTT
                         units.forEach { unit ->
                             val idUnidad = unit.id_unidad
                             val idDispositivo = unit.dispositivo?.id_dispositivo
@@ -87,7 +101,7 @@ class DashboardViewModel(
     private fun observeTelemetry() {
         Log.d("DashboardVM", "⏳ Registrando escucha de MQTT")
         MqttCallbackBus.register { topic, payload ->
-            Log.d("DashboardVM", "📩 MQTT recibido [$topic]: $payload")
+            Log.d("DashboardVM", "MQTT recibido [$topic]: $payload")
 
             if (topic.contains("/telemetry")) {
                 val parts = topic.split("/")
@@ -105,9 +119,9 @@ class DashboardViewModel(
                         put(unidadId, lectura)
                     }
 
-                    Log.d("DashboardVM", "✅ Telemetría actualizada para unidad $unidadId")
+                    Log.d("DashboardVM", "Telemetría actualizada para unidad $unidadId")
                 } catch (e: Exception) {
-                    Log.e("DashboardVM", "❌ Error al parsear telemetría: $payload", e)
+                    Log.e("DashboardVM", "Error al parsear telemetría: $payload", e)
                 }
             }
         }
@@ -116,5 +130,9 @@ class DashboardViewModel(
     override fun onCleared() {
         super.onCleared()
         MqttCallbackBus.register { topic, payload ->  }
+    }
+
+    fun selectUnit(unit: com.example.aquagrow.data.model.domain.Unit) {
+            _selectedUnit.value = unit
     }
 }

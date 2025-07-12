@@ -10,3 +10,13 @@ import com.google.gson.annotations.SerializedName
 data class UnitResponse(
     val units: List<Unit>
 )
+
+data class UnitUpdateValuesResponse (
+    val id_unidad : Int,
+    val mensaje : String
+)
+
+data class UnitRemoveUserResponse (
+    val id_usuario : Int,
+    val mensaje: String
+)

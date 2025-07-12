@@ -24,6 +24,7 @@ import kotlinx.coroutines.launch
 import android.util.Log
 import com.example.aquagrow.data.repository.UnitRepository
 import com.example.aquagrow.data.remote.mqtt.MqttClientManager
+import com.example.aquagrow.ui.profile.ProfileFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -58,15 +59,21 @@ class MainActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             try {
-                val units = UnitRepository().getUnitsForCurrentUser()
+                val tipoUsuario = SessionManager.getUserType()
+                val units = if (tipoUsuario == "Administrador") {
+                    UnitRepository().getAllUnitsWithZoneTankUser()
+                } else {
+                    UnitRepository().getUnitsForCurrentUser()
+                }
+
                 units.forEach { unit ->
                     val dispId = unit.dispositivo?.id_dispositivo ?: return@forEach
                     val topic = "invernadero/${unit.id_unidad}/$dispId/alert"
                     MqttClientManager.subscribe(topic)
-                    Log.d("MainActivity", "📡 Subscrito globalmente a $topic")
+                    Log.d("MainActivity", "Subscrito globalmente a $topic")
                 }
             } catch (e: Exception) {
-                Log.e("MainActivity", "❌ Error al obtener unidades para alertas MQTT", e)
+                Log.e("MainActivity", "Error al obtener unidades para alertas MQTT", e)
             }
         }
     }
@@ -106,6 +113,9 @@ class MainActivity : AppCompatActivity() {
         val iconResource = when (iconName.toLowerCase()) {
             "grafica" -> R.drawable.ic_dashboard
             "usuarios" -> R.drawable.ic_users
+            "unidades" -> R.drawable.ic_acuaponia
+            "asignacion" -> R.drawable.ic_asignacion
+            "cuenta" -> R.drawable.baseline_manage_accounts_24
             // agregar mas icocno para los demas modulos
             else -> R.drawable.ic_fish
         }
@@ -127,6 +137,9 @@ class MainActivity : AppCompatActivity() {
         val fragment = when (permission.nombre_modulo) {
             "Dashboard" -> DashboardFragment()
             "Usuarios" -> UserListFragment()
+            // "Asignacion unidades" -> AdminUnitListFragment()
+            "Asignacion unidades" -> DashboardFragment()
+            "Cuenta" -> ProfileFragment()
             // agregar mas fragments para os demas modulos
             else -> DashboardFragment()
         }

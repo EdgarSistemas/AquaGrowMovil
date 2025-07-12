@@ -15,7 +15,7 @@ object MqttNotificationHandler {
             if (topic.endsWith("/alert")) {
                 val unidadId = MqttTopicHelper.extractUnidadId(topic)
                 val json = JSONObject(payload)
-                val tipo = json.optString("tipo", "⚠️ Alerta sin detalles")
+                val tipo = json.optString("tipo", "Alerta sin detalles")
                 val lectura = payload
 
                 showAlertNotification(context, unidadId, tipo, lectura)
@@ -39,7 +39,7 @@ object MqttNotificationHandler {
 
         val notification = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.baseline_warning_24)
-            .setContentTitle("🚨 Alerta en unidad $unidadId")
+            .setContentTitle("Alerta en unidad $unidadId")
             .setStyle(NotificationCompat.BigTextStyle().bigText("$mensaje\n\n$lectura"))
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)

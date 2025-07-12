@@ -4,9 +4,7 @@ import android.app.Application
 import android.util.Log
 import com.example.aquagrow.data.local.SessionManager
 import com.example.aquagrow.data.remote.mqtt.MqttClientManager
-import com.example.aquagrow.data.remote.mqtt.MqttTopicHelper
 import com.example.aquagrow.ui.notifications.MqttNotificationHandler
-import org.json.JSONObject
 
 class AquagrowApp : Application() {
     companion object {
@@ -26,7 +24,7 @@ class AquagrowApp : Application() {
         Log.d("AquagrowApp", "Sesión activa y válida: $shouldNavigateToMain")
 
         // Inicia conexión MQTT al abrir app
-        MqttClientManager.connect("10.43.117.162")
+        MqttClientManager.connect()
         // Escuchar alertas en cualquier parte de la app
         if (!alertListenerRegistered) {
             MqttNotificationHandler.initGlobalAlertSubscription(applicationContext)

@@ -46,7 +46,7 @@ object SessionManager {
             putString("auth_token", token)
             putInt("user_id", user.id_usuario)
             putString("user_name", user.usuario)
-            putString("user_type", user.tipo_usuario.nombre)
+            putString("user_type", user.tipo_usuario?.nombre)
             // Guardar permisos como JSON
             val permisosJson = Gson().toJson(user.permisos)
             putString("permission", permisosJson)

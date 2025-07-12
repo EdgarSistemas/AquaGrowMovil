@@ -11,10 +11,10 @@ data class User(
     @SerializedName("estatus") val estatus: Int,
 
     @SerializedName("fecha_ultima_conexion")
-    val fecha_ultima_conexion: Date,
+    val fecha_ultima_conexion: Date?,
 
-    @SerializedName("tipo_usuario") val tipo_usuario: UserType,
-    @SerializedName("permisos") val permisos: List<Permission>
+    @SerializedName("tipo_usuario") val tipo_usuario: UserType?,
+    @SerializedName("permisos") val permisos: List<Permission>?
 )
 
 data class UserType (

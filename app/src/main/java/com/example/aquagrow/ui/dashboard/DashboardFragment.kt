@@ -8,10 +8,9 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.ProgressBar
 import android.widget.TextView
-import android.widget.Toast
-import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.lifecycle.Lifecycle
@@ -19,7 +18,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.RecyclerView
 import com.example.aquagrow.R
+import com.example.aquagrow.data.local.SessionManager
 import com.example.aquagrow.data.model.domain.Unit
+import com.example.aquagrow.ui.assignUnit.AdminUnitViewModel
+import com.example.aquagrow.ui.assignUnit.AssignUnitFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
@@ -32,7 +34,8 @@ class DashboardFragment : Fragment() {
     private lateinit var tvEmptyState: TextView
     private lateinit var fabRefresh: FloatingActionButton
 
-    private val viewModel: DashboardViewModel by viewModels()
+    private val viewModel: DashboardViewModel by activityViewModels()
+    private val adminUnitViewModel: AdminUnitViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_dashboard, container, false)
@@ -120,13 +123,22 @@ class DashboardFragment : Fragment() {
     }
 
     private fun navigateToUnitFragment(unit: Unit) {
-        // Mostrar Toast para prueba rápida
-        Toast.makeText(requireContext(), "Click en ${unit.nombre}", Toast.LENGTH_SHORT).show()
+        val tipoUsuario = SessionManager.getUserType()
 
-        // O usando Snackbar seguro
-        Snackbar.make(requireView(), "Unidad ${unit.id_unidad} seleccionada", Snackbar.LENGTH_LONG)
-            .setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.teal_700))
-            .show()
+        viewModel.selectUnit(unit)
+        adminUnitViewModel.selectUnit(unit)
+
+        val fragment = if (tipoUsuario == "Administrador") {
+            AssignUnitFragment()
+        } else {
+            // CultivoListFragment.newInstance(unit.id_unidad)
+            AssignUnitFragment()
+        }
+
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     private fun showLoading(show: Boolean) {
