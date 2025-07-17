@@ -27,4 +27,7 @@ interface UnitService {
 
     @POST("unit/assign_user")
     suspend fun assign_user (@Body request: UniUserIdRequest) : Response<UnitRemoveUserResponse>
+
+    @POST("unit/get_units_with_growing_zone_tank_user")
+    suspend fun get_units_with_growing_zone_tank_user (@Body request: UniUserIdRequest) : Response<UnitResponse>
 }

@@ -19,7 +19,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.aquagrow.AquagrowApp
 import com.example.aquagrow.R
+import com.example.aquagrow.data.remote.mqtt.MqttClientManager
+import com.example.aquagrow.data.remote.mqtt.MqttInitializer
 import com.example.aquagrow.ui.main.MainActivity
+import com.example.aquagrow.ui.notifications.MqttNotificationHandler
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -74,6 +77,7 @@ class LoginActivity : AppCompatActivity() {
             insets
         }
     }
+
     private fun setupObservers() {
         Log.d("LoginActivity", "Configurando observadores...")
         lifecycleScope.launch {
@@ -95,6 +99,7 @@ class LoginActivity : AppCompatActivity() {
                         is LoginState.Success -> {
                             Log.d("LoginActivity", "Login exitoso, navegando...")
                             progressBar.visibility = View.GONE
+                            MqttInitializer.initAfterLogin()
                             startMainActivity()
                         }
                         is LoginState.Error -> {

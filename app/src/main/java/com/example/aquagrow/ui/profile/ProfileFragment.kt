@@ -87,6 +87,8 @@ class ProfileFragment : Fragment() {
         }
 
         btnLogout.setOnClickListener {
+            com.example.aquagrow.data.remote.mqtt.MqttClientManager.disconnect()
+
             SessionManager.clearAuthData()
             com.example.aquagrow.AquagrowApp.shouldNavigateToMain = false
 

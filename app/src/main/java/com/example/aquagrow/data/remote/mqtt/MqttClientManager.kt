@@ -10,13 +10,17 @@ import java.nio.charset.StandardCharsets
 object MqttClientManager {
     private var mqttClient: Mqtt3AsyncClient? = null
 
-    private const val BROKER_HOST = "8cc34711662e4d5f82972c682f00e961.s1.eu.hivemq.cloud"
+    // private const val BROKER_HOST = "4e1f320a15b442f09cbd54df897c263d.s1.eu.hivemq.cloud"
+    private const val BROKER_HOST = "8cc34711662e4d5f82972c682f00e961.s1.eu.hivemq.cloud "
     private const val BROKER_PORT = 8883
     private const val USERNAME = "Jose_2003"
     private const val PASSWORD = "Jose_2003"
 
     fun connect() {
-        if (mqttClient?.state?.isConnected == true) return
+        if (mqttClient != null && mqttClient?.state?.isConnected == true) {
+            Log.d("MQTT", "Ya hay una conexión MQTT activa. No se reconectará.")
+            return
+        }
 
         val simpleAuth = Mqtt3SimpleAuth.builder()
             .username(USERNAME)
@@ -51,7 +55,7 @@ object MqttClientManager {
     }
 
     fun subscribe(topic: String) {
-        if (mqttClient?.state?.isConnected != true) {
+        if (mqttClient == null && mqttClient?.state?.isConnected != true) {
             Log.e("MQTT", "Cliente MQTT no conectado, no puede suscribirse a $topic")
             return
         }
@@ -75,6 +79,10 @@ object MqttClientManager {
             ?.payload(payload.toByteArray(StandardCharsets.UTF_8))
             ?.send()
         Log.d("MQTT", "[PUB] $topic => $payload")
+    }
+
+    fun isConnected () : Boolean {
+        return mqttClient != null && mqttClient?.state?.isConnected == true
     }
 
     fun disconnect() {

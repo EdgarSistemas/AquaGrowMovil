@@ -5,6 +5,8 @@ import java.util.concurrent.TimeUnit
 import com.example.aquagrow.data.remote.api.interceptors.AuthInterceptor
 import com.example.aquagrow.data.remote.api.interceptors.ErrorInterceptor
 import com.example.aquagrow.data.remote.api.services.AuthService
+import com.example.aquagrow.data.remote.api.services.ConfigZoneService
+import com.example.aquagrow.data.remote.api.services.GrowingService
 import com.example.aquagrow.data.remote.api.services.UnitService
 import com.example.aquagrow.data.remote.api.services.UserService
 import com.google.gson.Gson
@@ -66,5 +68,13 @@ object ApiClient {
 
     val unitService : UnitService by lazy {
         retrofit.create(UnitService::class.java)
+    }
+
+    val growingService : GrowingService by lazy {
+        retrofit.create(GrowingService::class.java)
+    }
+
+    val configZoneService : ConfigZoneService by lazy {
+        retrofit.create(ConfigZoneService::class.java)
     }
 }

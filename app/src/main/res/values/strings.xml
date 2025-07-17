@@ -11,4 +11,12 @@
     <string name="error_saving_user">Error al guardar el usuario</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string-array name="estatus_final_options">
+        <item>Completado</item>
+        <item>Fallido</item>
+    </string-array>
+    <string-array name="tipo_frecuencia_array">
+        <item>Diario</item>
+        <item>Días de semana</item>
+    </string-array>
 </resources>

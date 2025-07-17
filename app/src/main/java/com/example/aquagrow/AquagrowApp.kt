@@ -22,13 +22,5 @@ class AquagrowApp : Application() {
         // Verificar si hay sesión activa y no expirada
         shouldNavigateToMain = SessionManager.isLoggedIn() && !SessionManager.isTokenExpired()
         Log.d("AquagrowApp", "Sesión activa y válida: $shouldNavigateToMain")
-
-        // Inicia conexión MQTT al abrir app
-        MqttClientManager.connect()
-        // Escuchar alertas en cualquier parte de la app
-        if (!alertListenerRegistered) {
-            MqttNotificationHandler.initGlobalAlertSubscription(applicationContext)
-            alertListenerRegistered = true
-        }
     }
 }

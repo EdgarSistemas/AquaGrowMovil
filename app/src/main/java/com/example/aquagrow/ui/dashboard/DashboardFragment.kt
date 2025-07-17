@@ -22,6 +22,7 @@ import com.example.aquagrow.data.local.SessionManager
 import com.example.aquagrow.data.model.domain.Unit
 import com.example.aquagrow.ui.assignUnit.AdminUnitViewModel
 import com.example.aquagrow.ui.assignUnit.AssignUnitFragment
+import com.example.aquagrow.ui.unit.detail.UnitDetailFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
@@ -131,14 +132,14 @@ class DashboardFragment : Fragment() {
         val fragment = if (tipoUsuario == "Administrador") {
             AssignUnitFragment()
         } else {
-            // CultivoListFragment.newInstance(unit.id_unidad)
-            AssignUnitFragment()
+            UnitDetailFragment.newInstance(unit.id_unidad)
         }
-
+        Log.e("DashboardFragment", "Ya pase el if")
         parentFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, fragment)
             .addToBackStack(null)
             .commit()
+        Log.e("DashboardFragment", "Ya los sobrepase")
     }
 
     private fun showLoading(show: Boolean) {

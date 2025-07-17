@@ -112,4 +112,27 @@ class UnitRepository @Inject constructor() {
             throw e
         }
     }
+
+    suspend fun getUnitById(idUnidad: Int): Unit {
+        Log.d("UnitRepo", "Obteniendo el detalle de la unidad en base al id de la unidad y el id del usuario")
+        return try {
+            val userId = SessionManager.getUserId() ?: throw Exception("Usuario no autenticado")
+            val request = UniUserIdRequest(id_unidad = idUnidad, id_usuario = userId)
+            val response = ApiClient.unitService.get_units_with_growing_zone_tank_user(request)
+
+            if (!response.isSuccessful) {
+                throw Exception("Error al obtener unidades: ${response.code()}")
+            }
+
+            val unitResponse = response.body() ?: throw Exception("Respuesta vacía del servidor")
+            if (unitResponse.units.isNotEmpty()) {
+                unitResponse.units[0]
+            } else {
+                throw Exception("No se encontró ninguna unidad con el ID proporcionado")
+            }
+        } catch (e: Exception) {
+            Log.e("UnitRepository", "Error: ${e.message}")
+            throw e
+        }
+    }
 }

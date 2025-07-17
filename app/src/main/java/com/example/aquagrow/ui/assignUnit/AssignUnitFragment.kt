@@ -3,11 +3,13 @@ package com.example.aquagrow.ui.assignUnit
 import android.os.Bundle
 import android.view.*
 import android.widget.*
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.aquagrow.R
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 
 class AssignUnitFragment : Fragment() {
@@ -120,8 +122,13 @@ class AssignUnitFragment : Fragment() {
         }
     }
 
-    private fun showToast(msg: String) {
-        Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+    private fun showToast(message: String) {
+        view?.let {
+            Snackbar.make(it, message, Snackbar.LENGTH_SHORT)
+                .setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.success))
+                .setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+                .show()
+        }
     }
 
     private fun showLoading(show: Boolean) {

@@ -3,28 +3,26 @@ package com.example.aquagrow.ui.main
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
+import com.example.aquagrow.AquagrowApp
 import com.example.aquagrow.R
 import com.example.aquagrow.data.local.SessionManager
 import com.example.aquagrow.data.model.domain.Permission
-import com.example.aquagrow.ui.dashboard.DashboardFragment
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import android.view.MenuItem
-import android.view.View
-import com.example.aquagrow.ui.user.list.UserListFragment
-import com.google.android.material.snackbar.Snackbar
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.launch
-import android.util.Log
-import com.example.aquagrow.data.repository.UnitRepository
 import com.example.aquagrow.data.remote.mqtt.MqttClientManager
+import com.example.aquagrow.ui.dashboard.DashboardFragment
 import com.example.aquagrow.ui.profile.ProfileFragment
+import com.example.aquagrow.ui.user.list.UserListFragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity() {
 
@@ -33,19 +31,19 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //enableEdgeToEdge()
         setContentView(R.layout.activity_main)
+        if (!MqttClientManager.isConnected()) {
+            Log.d("MainActivity", "MQTT no conectado, reiniciando MQTT...")
+            com.example.aquagrow.data.remote.mqtt.MqttInitializer.initAfterLogin()
+        }
 
         window.statusBarColor = ContextCompat.getColor(this, R.color.color_boton)
 
-        // Inicializar vistas
         fragmentContainer = findViewById(R.id.fragment_container)
         bottomNavigation = findViewById(R.id.bottom_navigation)
 
-        // Configurar Bottom Navigation dinámicamente
         setupBottomNavigation()
 
-        // Cargar fragmento inicial
         if (savedInstanceState == null) {
             loadInitialFragment()
         }
@@ -56,32 +54,11 @@ class MainActivity : AppCompatActivity() {
             bottomNavigation.setPadding(0, 0, 0, systemBars.bottom)
             insets
         }
-
-        lifecycleScope.launch {
-            try {
-                val tipoUsuario = SessionManager.getUserType()
-                val units = if (tipoUsuario == "Administrador") {
-                    UnitRepository().getAllUnitsWithZoneTankUser()
-                } else {
-                    UnitRepository().getUnitsForCurrentUser()
-                }
-
-                units.forEach { unit ->
-                    val dispId = unit.dispositivo?.id_dispositivo ?: return@forEach
-                    val topic = "invernadero/${unit.id_unidad}/$dispId/alert"
-                    MqttClientManager.subscribe(topic)
-                    Log.d("MainActivity", "Subscrito globalmente a $topic")
-                }
-            } catch (e: Exception) {
-                Log.e("MainActivity", "Error al obtener unidades para alertas MQTT", e)
-            }
-        }
     }
 
     private fun setupBottomNavigation() {
         val permissions = SessionManager.getPermissions()
 
-        // Crear menú dinámico basado en permisos
         val menu = bottomNavigation.menu
         menu.clear()
         permissions.forEachIndexed { index, permission ->
@@ -91,12 +68,9 @@ class MainActivity : AppCompatActivity() {
                 Menu.NONE,
                 permission.nombre_modulo
             )
-
-            // Asignar icono basado en el nombre
             menuItem.icon = getIconForModule(permission.icono)
         }
 
-        // Configurar listener para cambio de ítems
         bottomNavigation.setOnNavigationItemSelectedListener { item ->
             val position = item.itemId
             if (position < permissions.size) {
@@ -109,17 +83,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getIconForModule(iconName: String): Drawable? {
-        // Mapear nombres de iconos a recursos drawable
-        val iconResource = when (iconName.toLowerCase()) {
+        val iconResource = when (iconName.lowercase()) {
             "grafica" -> R.drawable.ic_dashboard
             "usuarios" -> R.drawable.ic_users
             "unidades" -> R.drawable.ic_acuaponia
             "asignacion" -> R.drawable.ic_asignacion
             "cuenta" -> R.drawable.baseline_manage_accounts_24
-            // agregar mas icocno para los demas modulos
             else -> R.drawable.ic_fish
         }
-
         return ContextCompat.getDrawable(this, iconResource)
     }
 
@@ -128,7 +99,6 @@ class MainActivity : AppCompatActivity() {
         if (permissions.isNotEmpty()) {
             loadFragmentForPermission(permissions[0])
         } else {
-            // Cargar fragmento por defecto si no hay permisos
             loadFragment(DashboardFragment(), "Dashboard")
         }
     }
@@ -137,13 +107,10 @@ class MainActivity : AppCompatActivity() {
         val fragment = when (permission.nombre_modulo) {
             "Dashboard" -> DashboardFragment()
             "Usuarios" -> UserListFragment()
-            // "Asignacion unidades" -> AdminUnitListFragment()
             "Asignacion unidades" -> DashboardFragment()
             "Cuenta" -> ProfileFragment()
-            // agregar mas fragments para os demas modulos
             else -> DashboardFragment()
         }
-
         loadFragment(fragment, permission.nombre_modulo)
     }
 
@@ -168,8 +135,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun logoutUser() {
         SessionManager.clearAuthData()
-        com.example.aquagrow.AquagrowApp.shouldNavigateToMain = false
-
+        AquagrowApp.shouldNavigateToMain = false
         startActivity(Intent(this, com.example.aquagrow.ui.auth.LoginActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         })
