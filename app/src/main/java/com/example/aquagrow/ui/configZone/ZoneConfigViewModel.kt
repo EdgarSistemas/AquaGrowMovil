@@ -11,6 +11,7 @@ import com.example.aquagrow.data.repository.ConfigZoneRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 
 class ZoneConfigViewModel(
     private val repository: ConfigZoneRepository,
@@ -38,9 +39,9 @@ class ZoneConfigViewModel(
             _state.value = ZoneConfigState.Loading
             try {
                 val configZone = zonaId?.let {
-                    idConfigZone = it
                     repository.getConfigZone(it)  // ← nombre correcto
                 }
+                idConfigZone = configZone?.id_config
 
                 val programacion = programacionId?.let {
                     idProgramacion = it
@@ -135,11 +136,13 @@ class ZoneConfigViewModel(
 
     private fun publishMqttConfig(tempMin: Double, tempMax: Double) {
         val topic = "invernadero/$unidadId/$dispId/config/set"
-        val payload = """{
-            "tipo": "zona",
-            "temp_min": $tempMin,
-            "temp_max": $tempMax
-        }""".trimIndent()
+        val payload = JSONObject().apply {
+            put("tipo", "zone")
+            put("zone", JSONObject().apply {
+                put("temp_min", tempMin)
+                put("temp_max", tempMax)
+            })
+        }.toString()
         Log.e("ZCViewModel", "payload de confg zone $payload")
         mqttManager.publish(topic, payload)
     }
@@ -153,23 +156,23 @@ class ZoneConfigViewModel(
         intervaloMinutos: Int
     ) {
         val topic = "invernadero/$unidadId/$dispId/config/set"
-        val payload = """{
-            "tipo": "zona",
-            "irrigation": {
-                "hora_inicio": "$horaInicio",
-                "duracion_minutos": $duracionMinutos,
-                "tipo_frecuencia": "$tipoFrecuencia",
-                "dias_semana": "$diasSemana",
-                "frecuencia_dia": $frecuenciaDia,
-                "intervalo_minutos": $intervaloMinutos
-            }
-        }""".trimIndent()
+        val payload = JSONObject().apply {
+            put("tipo", "irrigation")
+            put("irrigation", JSONObject().apply {
+                put("hora_inicio", horaInicio)
+                put("duracion_minutos", duracionMinutos)
+                put("tipo_frecuencia", tipoFrecuencia)
+                put("dias_semana", diasSemana)
+                put("frecuencia_dia", frecuenciaDia)
+                put("intervalo_minutos", intervaloMinutos)
+            })
+        }.toString()
         Log.e("ZCViewModel", "payload de programacion irrigation $payload")
 
         mqttManager.publish(topic, payload)
     }
 
-    fun subscribeToTelemetry(tvTempZona: TextView) {
+    fun subscribeToTelemetry(tvTempZona: TextView, tvHumedad: TextView) {
         val topic = "invernadero/$unidadId/$dispId/telemetry"
 
         mqttManager.subscribe(topic)
@@ -179,9 +182,16 @@ class ZoneConfigViewModel(
                 try {
                     val json = org.json.JSONObject(payload)
                     val temp = json.optDouble("tempZona", Double.NaN)
+                    val hum = json.optDouble("humedad", Double.NaN)
                     if (!temp.isNaN()) {
                         tvTempZona.post {
                             tvTempZona.text = "Temp. zona: ${"%.1f".format(temp)} °C"
+                            Log.e("ZCViewModel", "Telemetria desde ZoneConfigFragment")
+                        }
+                    }
+                    if (!hum.isNaN()){
+                        tvHumedad.post {
+                            tvHumedad.text = "Humedad: ${"%.1f".format(hum)}"
                         }
                     }
                 } catch (e: Exception) {

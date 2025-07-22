@@ -82,7 +82,9 @@ class GrowingFormFragment : Fragment() {
                     when (state) {
                         is GrowingFormState.Loading -> mostrarCargando()
                         is GrowingFormState.Error -> showError(state.message)
-                        is GrowingFormState.Form -> mostrarFormulario(state.growing)
+                        is GrowingFormState.Form -> {
+                            mostrarFormulario(state.growing)
+                        }
                         is GrowingFormState.Success -> {
                             showSuccess("Operación exitosa")
                             view?.postDelayed({

@@ -50,7 +50,9 @@ data class  ConfigTank (
     val temp_agua_min : Double,
     val temp_agua_max : Double,
     val ph_min : Double,
-    val ph_max : Double
+    val ph_max : Double,
+    val dist_min : Double,
+    val dist_max: Double
 )
 
 data class ProgramacionAlimentacion (

@@ -1,7 +1,6 @@
-package com.example.aquagrow.ui.configZone
+package com.example.aquagrow.ui.configTank
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.core.content.ContextCompat
@@ -10,18 +9,16 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.aquagrow.R
+import com.example.aquagrow.data.repository.TankConfigRepository
 import com.example.aquagrow.data.remote.mqtt.MqttClientManager
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
-import com.example.aquagrow.ui.zone.ZoneConfigState
-import com.example.aquagrow.ui.zone.ZoneConfigViewModel
 
-
-class ConfigZoneFragment : Fragment() {
+class TankConfigFragment : Fragment() {
 
     companion object {
-        fun newInstance(unitId: Int): ConfigZoneFragment {
-            val fragment = ConfigZoneFragment()
+        fun newInstance(unitId: Int): TankConfigFragment {
+            val fragment = TankConfigFragment()
             val args = Bundle()
             args.putInt("unit_id", unitId)
             fragment.arguments = args
@@ -29,54 +26,64 @@ class ConfigZoneFragment : Fragment() {
         }
     }
 
-    private lateinit var formViewModel: ZoneConfigViewModel
+    private lateinit var viewModel: TankConfigViewModel
 
     private lateinit var etTempMin: EditText
     private lateinit var etTempMax: EditText
+    private lateinit var etPhMin: EditText
+    private lateinit var etPhMax: EditText
+    private lateinit var etDistMin: EditText
+    private lateinit var etDistMax: EditText
+
     private lateinit var etHoraInicio: EditText
     private lateinit var etDuracion: EditText
     private lateinit var etFrecuenciaDia: EditText
     private lateinit var etIntervalo: EditText
     private lateinit var spinnerTipoFrecuencia: Spinner
-    private lateinit var btnGuardarConfZone : Button
-    private lateinit var btnGuardar: Button
-    private lateinit var progressBar: ProgressBar
     private lateinit var checkboxesDias: List<CheckBox>
-    private lateinit var tvTempZona: TextView
-    private lateinit var tvHumedad: TextView
+
+    private lateinit var btnSaveConfig: Button
+    private lateinit var btnSaveFeeding: Button
+    private lateinit var progressBar: ProgressBar
     private lateinit var scrollContainer: NestedScrollView
-    private lateinit var switchBomba: Switch
-    private lateinit var switchVentilador: Switch
-    private lateinit var switchLuces: Switch
+    private lateinit var switchAlimentador: Switch
+    private lateinit var tvTempAgua: TextView
+    private lateinit var tvPhAgua: TextView
+    private lateinit var tvNivelAgua: TextView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        return inflater.inflate(R.layout.fragment_config_zone, container, false)
+        return inflater.inflate(R.layout.fragment_tank_config, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        formViewModel = ZoneConfigViewModel(
-            repository = com.example.aquagrow.data.repository.ConfigZoneRepository(),
+        viewModel = TankConfigViewModel(
+            repository = TankConfigRepository(),
             mqttManager = MqttClientManager
         )
 
         etTempMin = view.findViewById(R.id.etTempMin)
         etTempMax = view.findViewById(R.id.etTempMax)
+        etPhMin = view.findViewById(R.id.etPhMin)
+        etPhMax = view.findViewById(R.id.etPhMax)
+        etDistMin = view.findViewById(R.id.etDistMin)
+        etDistMax = view.findViewById(R.id.etDistMax)
+
         etHoraInicio = view.findViewById(R.id.etHoraInicio)
         etDuracion = view.findViewById(R.id.etDuracion)
         etFrecuenciaDia = view.findViewById(R.id.etFrecuenciaDia)
         etIntervalo = view.findViewById(R.id.etIntervalo)
         spinnerTipoFrecuencia = view.findViewById(R.id.spinnerTipoFrecuencia)
-        btnGuardarConfZone = view.findViewById(R.id.btnSaveConfZone)
-        btnGuardar = view.findViewById(R.id.btnGuardarConfig)
+
+        btnSaveConfig = view.findViewById(R.id.btnSaveConfig)
+        btnSaveFeeding = view.findViewById(R.id.btnSaveFeeding)
         progressBar = view.findViewById(R.id.progressBar)
-        tvTempZona = view.findViewById(R.id.tvTempZona)
-        tvHumedad = view.findViewById(R.id.tvHumedad)
         scrollContainer = view.findViewById(R.id.scrollContainer)
-        switchBomba = view.findViewById(R.id.switchBomba)
-        switchVentilador = view.findViewById(R.id.switchVentilador)
-        switchLuces = view.findViewById(R.id.switchLuces)
+        switchAlimentador = view.findViewById(R.id.switchAlimentador)
+        tvTempAgua = view.findViewById(R.id.tvTempAgua)
+        tvPhAgua = view.findViewById(R.id.tvPhAgua)
+        tvNivelAgua = view.findViewById(R.id.tvNivelAgua)
 
         checkboxesDias = listOf(
             view.findViewById(R.id.cbLunes),
@@ -94,7 +101,6 @@ class ConfigZoneFragment : Fragment() {
             scrollContainer.paddingRight,
             scrollContainer.paddingBottom + 100
         )
-
         scrollContainer.visibility = View.INVISIBLE
         progressBar.visibility = View.VISIBLE
 
@@ -108,43 +114,40 @@ class ConfigZoneFragment : Fragment() {
         }
 
         spinnerTipoFrecuencia.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                val selected = parent.getItemAtPosition(position).toString()
-                val habilitar = selected == "Dias de semana"
-                checkboxesDias.forEach { it.isEnabled = habilitar }
+            override fun onItemSelected(p: AdapterView<*>, view: View?, pos: Int, id: Long) {
+                val selected = p.getItemAtPosition(pos).toString()
+                val enabled = selected == "Días de semana"
+                checkboxesDias.forEach { it.isEnabled = enabled }
             }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {}
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
         }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            val unitId = arguments?.getInt("unit_id") ?: return@launch
-            val unit = formViewModel.getFullUnitFromApi(unitId)
+        val unitId = arguments?.getInt("unit_id") ?: return
+
+        lifecycleScope.launch {
+            val unit = viewModel.getFullUnitFromApi(unitId)
             if (unit != null) {
-                Log.d("ZoneConfig", "Unidad completa recibida: ${unit.id_unidad}")
-                val zonaId = unit.zone?.id_zona ?: return@launch
-                val unidadId = unit.id_unidad
+                val estanqueId = unit.tank?.id_estanque ?: return@launch
+                val programacionId = unit.tank?.programacionAlimentacion?.id_programacion
                 val dispId = unit.dispositivo?.id_dispositivo ?: return@launch
-                formViewModel.setIdentifiers(zonaId, unidadId, dispId)
 
-                val configId = unit.zone?.configZone?.id_config
-                val progId = unit.zone?.programacionRiego?.id_programacion
-                formViewModel.loadData(zonaId, progId)
-            } else {
-                Log.e("ZoneConfig", "Unidad no encontrada en servidor")
+                viewModel.setIdentifiers(estanqueId, programacionId, unitId, dispId)
+                viewModel.loadData(estanqueId, programacionId)
             }
         }
 
-        observeState()
-
-        btnGuardarConfZone.setOnClickListener {
-            formViewModel.saveConfigZone(
+        btnSaveConfig.setOnClickListener {
+            viewModel.saveConfigTank(
                 tempMin = etTempMin.text.toString().toDoubleOrNull() ?: 0.0,
-                tempMax = etTempMax.text.toString().toDoubleOrNull() ?: 0.0
+                tempMax = etTempMax.text.toString().toDoubleOrNull() ?: 0.0,
+                phMin = etPhMin.text.toString().toDoubleOrNull() ?: 0.0,
+                phMax = etPhMax.text.toString().toDoubleOrNull() ?: 0.0,
+                distMin = etDistMin.text.toString().toDoubleOrNull() ?: 0.0,
+                distMax = etDistMax.text.toString().toDoubleOrNull() ?: 0.0
             )
         }
 
-        btnGuardar.setOnClickListener {
+        btnSaveFeeding.setOnClickListener {
             val selectedDias = checkboxesDias.filter { it.isChecked }.map {
                 when (it.id) {
                     R.id.cbLunes -> "lunes"
@@ -156,49 +159,42 @@ class ConfigZoneFragment : Fragment() {
                     R.id.cbDomingo -> "domingo"
                     else -> ""
                 }
-            }.joinToString(",")
+            }.joinToString(",").ifEmpty { null }
 
-            formViewModel.saveIrrigationSchedule(
+            viewModel.saveFeedingSchedule(
                 horaInicio = etHoraInicio.text.toString(),
                 duracionMinutos = etDuracion.text.toString().toIntOrNull() ?: 0,
                 tipoFrecuencia = spinnerTipoFrecuencia.selectedItem.toString(),
                 diasSemana = selectedDias,
-                frecuenciaDia = etFrecuenciaDia.text.toString().toIntOrNull() ?: 0,
-                intervaloMinutos = etIntervalo.text.toString().toIntOrNull() ?: 0
+                frecuenciaDia = etFrecuenciaDia.text.toString().toIntOrNull(),
+                intervaloMinutos = etIntervalo.text.toString().toIntOrNull()
             )
         }
 
-        switchBomba.setOnCheckedChangeListener { _, isChecked ->
-            formViewModel.activateActuator("bomba", isChecked)
+        switchAlimentador.setOnCheckedChangeListener { _, isChecked ->
+            viewModel.activateActuator("alimentador", isChecked)
         }
 
-        switchVentilador.setOnCheckedChangeListener { _, isChecked ->
-            formViewModel.activateActuator("ventilador", isChecked)
-        }
-
-        switchLuces.setOnCheckedChangeListener { _, isChecked ->
-            formViewModel.activateActuator("luz", isChecked)
-        }
+        observeState()
     }
 
     private fun observeState() {
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(androidx.lifecycle.Lifecycle.State.STARTED) {
-                formViewModel.state.collect { state ->
-                    Log.d("ZoneConfig", "Estado observado: $state")
+                viewModel.state.collect { state ->
                     when (state) {
-                        is ZoneConfigState.Loading -> showLoading(true)
-                        is ZoneConfigState.Loaded -> {
+                        is TankConfigState.Loading -> showLoading(true)
+                        is TankConfigState.Loaded -> {
                             showLoading(false)
-                            populateFields(state)
                             scrollContainer.visibility = View.VISIBLE
-                            formViewModel.subscribeToTelemetry(tvTempZona, tvHumedad)
+                            populateFields(state)
+                            viewModel.subscribeToTelemetry(tvTempAgua, tvPhAgua, tvNivelAgua)
                         }
-                        is ZoneConfigState.Success -> {
+                        is TankConfigState.Success -> {
                             showLoading(false)
                             showSnackbar(state.mensaje)
                         }
-                        is ZoneConfigState.Error -> {
+                        is TankConfigState.Error -> {
                             showLoading(false)
                             showSnackbar("Error: ${state.mensaje}")
                         }
@@ -208,27 +204,44 @@ class ConfigZoneFragment : Fragment() {
         }
     }
 
-    private fun populateFields(state: ZoneConfigState.Loaded) {
-        state.configZone?.let {
-            etTempMin.setText(it.temp_min.toString())
-            etTempMax.setText(it.temp_max.toString())
+    private fun populateFields(state: TankConfigState.Loaded) {
+        state.configTank?.let {
+            etTempMin.setText(it.temp_agua_min.toString())
+            etTempMax.setText(it.temp_agua_max.toString())
+            etPhMin.setText(it.ph_min.toString())
+            etPhMax.setText(it.ph_max.toString())
+            etDistMin.setText(it.dist_min.toString())
+            etDistMax.setText(it.dist_max.toString())
         }
 
-        state.programacionRiego?.let {
+        state.feedingSchedule?.let {
             etHoraInicio.setText(it.hora_inicio)
             etDuracion.setText(it.duracion_minutos.toString())
-            etFrecuenciaDia.setText(it.frecuencia_dia.toString())
-            etIntervalo.setText(it.intervalo_minutos.toString())
+            etFrecuenciaDia.setText(it.frecuencia_dia?.toString() ?: "")
+            etIntervalo.setText(it.intervalo_minutos?.toString() ?: "")
             val index = resources.getStringArray(R.array.tipo_frecuencia_array).indexOf(it.tipo_frecuencia)
             if (index >= 0) spinnerTipoFrecuencia.setSelection(index)
 
-            val dias = it.dias_semana.split(",").map { dia -> dia.trim() }
-            val mapaDias = mapOf("lunes" to R.id.cbLunes, "martes" to R.id.cbMartes, "miercoles" to R.id.cbMiercoles, "jueves" to R.id.cbJueves,
-                "viernes" to R.id.cbViernes, "sabado" to R.id.cbSabado, "domingo" to R.id.cbDomingo)
-            dias.forEach { dia ->
-                mapaDias[dia]?.let { id -> view?.findViewById<CheckBox>(id)?.isChecked = true }
+            checkboxesDias.forEach { it.isChecked = false }
+            it.dias_semana?.split(",")?.map { dia -> dia.trim().lowercase() }?.forEach { dia ->
+                when (dia) {
+                    "lunes" -> checkboxesDias[0].isChecked = true
+                    "martes" -> checkboxesDias[1].isChecked = true
+                    "miercoles" -> checkboxesDias[2].isChecked = true
+                    "jueves" -> checkboxesDias[3].isChecked = true
+                    "viernes" -> checkboxesDias[4].isChecked = true
+                    "sabado" -> checkboxesDias[5].isChecked = true
+                    "domingo" -> checkboxesDias[6].isChecked = true
+                }
             }
         }
+    }
+
+    private fun showLoading(show: Boolean) {
+        progressBar.visibility = if (show) View.VISIBLE else View.GONE
+        btnSaveConfig.isEnabled = !show
+        btnSaveFeeding.isEnabled = !show
+        switchAlimentador.isEnabled = !show
     }
 
     private fun showSnackbar(message: String) {
@@ -240,13 +253,5 @@ class ConfigZoneFragment : Fragment() {
             .setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
             .setAnchorView(bottomNav)
             .show()
-    }
-
-    private fun showLoading(show: Boolean) {
-        progressBar.visibility = if (show) View.VISIBLE else View.GONE
-        btnGuardar.isEnabled = !show
-        switchBomba.isEnabled = !show
-        switchVentilador.isEnabled = !show
-        switchLuces.isEnabled = !show
     }
 }

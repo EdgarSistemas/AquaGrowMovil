@@ -17,6 +17,6 @@
     </string-array>
     <string-array name="tipo_frecuencia_array">
         <item>Diario</item>
-        <item>Días de semana</item>
+        <item>Dias de semana</item>
     </string-array>
 </resources>

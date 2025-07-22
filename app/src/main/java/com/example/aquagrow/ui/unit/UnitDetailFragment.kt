@@ -9,11 +9,13 @@ import androidx.cardview.widget.CardView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.replace
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.aquagrow.R
 import com.example.aquagrow.data.model.domain.Unit
 import com.example.aquagrow.ui.assignUnit.AdminUnitViewModel
+import com.example.aquagrow.ui.configTank.TankConfigFragment
 import com.example.aquagrow.ui.growing.GrowingFormFragment
 import com.example.aquagrow.ui.unit.UnitDetailState
 import com.example.aquagrow.ui.unit.UnitDetailViewModel
@@ -96,6 +98,17 @@ class UnitDetailFragment : Fragment() {
             (viewModel.state.value as? UnitDetailState.Success)?.unit?.let { unit ->
                 adminUnitViewModel.selectUnit(unit)
                 val fragment = ConfigZoneFragment.newInstance(unit.id_unidad)
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .addToBackStack(null)
+                    .commit()
+            }
+        }
+
+        cardEstanque.setOnClickListener {
+            (viewModel.state.value as? UnitDetailState.Success)?.unit?.let { unit ->
+                adminUnitViewModel.selectUnit(unit)
+                val fragment = TankConfigFragment.newInstance(unit.id_unidad)
                 parentFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, fragment)
                     .addToBackStack(null)

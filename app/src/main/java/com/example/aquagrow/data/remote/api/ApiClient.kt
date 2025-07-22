@@ -7,6 +7,7 @@ import com.example.aquagrow.data.remote.api.interceptors.ErrorInterceptor
 import com.example.aquagrow.data.remote.api.services.AuthService
 import com.example.aquagrow.data.remote.api.services.ConfigZoneService
 import com.example.aquagrow.data.remote.api.services.GrowingService
+import com.example.aquagrow.data.remote.api.services.TankConfigService
 import com.example.aquagrow.data.remote.api.services.UnitService
 import com.example.aquagrow.data.remote.api.services.UserService
 import com.google.gson.Gson
@@ -76,5 +77,9 @@ object ApiClient {
 
     val configZoneService : ConfigZoneService by lazy {
         retrofit.create(ConfigZoneService::class.java)
+    }
+
+    val tankConfigService : TankConfigService by lazy {
+        retrofit.create(TankConfigService::class.java)
     }
 }

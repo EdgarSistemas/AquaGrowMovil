@@ -3,6 +3,7 @@ package com.example.aquagrow.data.remote.mqtt
 import android.util.Log
 import com.hivemq.client.mqtt.MqttClient
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter
+import com.hivemq.client.mqtt.datatypes.MqttQos
 import com.hivemq.client.mqtt.mqtt3.Mqtt3AsyncClient
 import com.hivemq.client.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth
 import java.nio.charset.StandardCharsets
@@ -11,7 +12,7 @@ object MqttClientManager {
     private var mqttClient: Mqtt3AsyncClient? = null
 
     // private const val BROKER_HOST = "4e1f320a15b442f09cbd54df897c263d.s1.eu.hivemq.cloud"
-    private const val BROKER_HOST = "8cc34711662e4d5f82972c682f00e961.s1.eu.hivemq.cloud "
+    private const val BROKER_HOST = "8cc34711662e4d5f82972c682f00e961.s1.eu.hivemq.cloud"
     private const val BROKER_PORT = 8883
     private const val USERNAME = "Jose_2003"
     private const val PASSWORD = "Jose_2003"
@@ -77,7 +78,16 @@ object MqttClientManager {
         mqttClient?.publishWith()
             ?.topic(topic)
             ?.payload(payload.toByteArray(StandardCharsets.UTF_8))
+            ?.retain(true)
+            ?.qos(MqttQos.AT_LEAST_ONCE)
             ?.send()
+            ?.whenComplete { ack, throwable ->
+                if (throwable != null) {
+                    Log.e("MQTT", "❌ Error al publicar en $topic", throwable)
+                } else {
+                    Log.i("MQTT", "✅ Publicación exitosa en $topic")
+                }
+            }
         Log.d("MQTT", "[PUB] $topic => $payload")
     }
 

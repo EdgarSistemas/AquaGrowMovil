@@ -10,44 +10,57 @@
     android:fitsSystemWindows="true">
 
     <LinearLayout
-        android:orientation="vertical"
+        android:id="@+id/layoutTankContent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
+        <!-- TÍTULO -->
         <TextView
-            android:text="Configuración de Zona"
+            android:text="Configuración del Estanque"
             android:textSize="18sp"
             android:textStyle="bold"
             android:layout_marginBottom="12dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
+        <!-- TELEMETRÍA -->
         <TextView
-            android:id="@+id/tvTempZona"
+            android:id="@+id/tvTempAgua"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Temp. zona: -- °C"
+            android:text="Temp. estanque: -- °C"
             android:textSize="16sp"
             android:textStyle="bold"
             android:padding="8dp"
             android:textColor="@color/black" />
 
         <TextView
-            android:id="@+id/tvHumedad"
+            android:id="@+id/tvPhAgua"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Humedad"
+            android:text="pH del estanque: --"
             android:textSize="16sp"
             android:textStyle="bold"
             android:padding="8dp"
             android:textColor="@color/black" />
 
+        <TextView
+            android:id="@+id/tvNivelAgua"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nivel de agua: -- L"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:padding="8dp"
+            android:textColor="@color/black" />
+
+        <!-- TEMPERATURA -->
         <com.google.android.material.textfield.TextInputLayout
+            android:hint="Temperatura mínima"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Temperatura mínima"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etTempMin"
                 android:layout_width="match_parent"
@@ -56,12 +69,11 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:hint="Temperatura máxima"
             android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etTempMax"
                 android:layout_width="match_parent"
@@ -69,17 +81,72 @@
                 android:inputType="numberDecimal"/>
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- PH -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:hint="pH mínimo"
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etPhMin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:hint="pH máximo"
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etPhMax"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- CANTIDAD DE AGUA -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:hint="Cantidad mínima de agua (L)"
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etDistMin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:hint="Cantidad máxima de agua (L)"
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etDistMax"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
         <Button
-            android:id="@+id/btnSaveConfZone"
+            android:id="@+id/btnSaveConfig"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="Guardar configuración de zona"
+            android:text="Guardar configuración del estanque"
             android:backgroundTint="@color/color_boton"
             android:textColor="@color/white"/>
 
+        <!-- PROGRAMACIÓN DE ALIMENTACIÓN -->
         <TextView
-            android:text="Programación de Riego"
+            android:text="Programación de Alimentación"
             android:textSize="18sp"
             android:textStyle="bold"
             android:layout_marginTop="24dp"
@@ -88,11 +155,10 @@
             android:layout_height="wrap_content" />
 
         <com.google.android.material.textfield.TextInputLayout
+            android:hint="Hora inicio (HH:MM)"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Hora inicio (HH:MM)"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etHoraInicio"
                 android:layout_width="match_parent"
@@ -101,12 +167,11 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:hint="Duración (min)"
             android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etDuracion"
                 android:layout_width="match_parent"
@@ -120,6 +185,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"/>
 
+        <!-- CheckBoxes días de la semana -->
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -143,28 +209,26 @@
                 android:layout_weight="1" />
         </LinearLayout>
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:gravity="center"
-        android:weightSum="4">
-        <CheckBox
-            android:id="@+id/cbMiercoles"
-            android:text="Miércoles"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/color_boton"
-            android:layout_weight="1" />
-        <CheckBox
-            android:id="@+id/cbJueves"
-            android:text="Jueves"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/color_boton"
-            android:layout_weight="1" />
-    </LinearLayout>
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:weightSum="4">
+            <CheckBox
+                android:id="@+id/cbMiercoles"
+                android:text="Miércoles"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+            <CheckBox
+                android:id="@+id/cbJueves"
+                android:text="Jueves"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </LinearLayout>
 
         <LinearLayout
             android:orientation="horizontal"
@@ -195,13 +259,13 @@
                 android:layout_weight="1" />
         </LinearLayout>
 
+        <!-- Frecuencia y Intervalo -->
         <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:hint="Frecuencia por día"
             android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etFrecuenciaDia"
                 android:layout_width="match_parent"
@@ -210,12 +274,11 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:hint="Intervalo (minutos)"
             android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etIntervalo"
                 android:layout_width="match_parent"
@@ -224,14 +287,15 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
-            android:id="@+id/btnGuardarConfig"
+            android:id="@+id/btnSaveFeeding"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="Guardar programación de alimentación"
             android:layout_marginTop="24dp"
-            android:text="Guardar configuración de riego"
             android:backgroundTint="@color/color_boton"
             android:textColor="@color/white"/>
 
+        <!-- Switch del alimentador -->
         <TextView
             android:text="Control Manual"
             android:textSize="18sp"
@@ -241,38 +305,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <!-- Switches de control manual -->
-        <LinearLayout
+        <Switch
+            android:id="@+id/switchAlimentador"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginTop="12dp"
-            android:weightSum="3">
+            android:text="Activar servomotor" />
 
-            <Switch
-                android:id="@+id/switchBomba"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Bomba"/>
-
-            <Switch
-                android:id="@+id/switchVentilador"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Ventilador"
-                android:layout_marginHorizontal="4dp"/>
-
-            <Switch
-                android:id="@+id/switchLuces"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Luces"/>
-        </LinearLayout>
-
+        <!-- Barra de progreso -->
         <ProgressBar
             android:id="@+id/progressBar"
             android:visibility="gone"
