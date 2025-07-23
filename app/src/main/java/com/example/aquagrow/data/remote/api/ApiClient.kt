@@ -18,7 +18,9 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object ApiClient {
-    private const val BASE_URL = "https://apiaquagrow-gudreccbhchbbzbz.mexicocentral-01.azurewebsites.net/api/"
+    //private const val BASE_URL = "https://apiaquagrow-gudreccbhchbbzbz.mexicocentral-01.azurewebsites.net/api/"
+    // Nuevo servidor
+    private const val BASE_URL = "https://apiaquagrowprod-cuayb3adejh2ejff.mexicocentral-01.azurewebsites.net/api/"
 
     // Singleton perezoso seguro para el cliente HTTP
     private val httpClient: OkHttpClient by lazy {

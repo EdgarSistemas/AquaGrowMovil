@@ -14,6 +14,7 @@ import com.example.aquagrow.ui.assignUnit.AdminUnitViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import okhttp3.internal.notifyAll
 import org.json.JSONObject
 
 class DashboardViewModel(
@@ -109,17 +110,20 @@ class DashboardViewModel(
 
                 try {
                     val json = JSONObject(payload)
-                    val lectura = Telemetry(
-                        tempAgua = json.optDouble("tempAgua", -1.0),
-                        tempZona = json.optDouble("tempZona", -1.0),
-                        ph = json.optDouble("ph", -1.0)
-                    )
+                    val tempAgua = json.optDouble("tempAgua", Double.NaN)
+                    val tempZona = json.optDouble("tempZona", Double.NaN)
+                    val ph = json.optDouble("ph", Double.NaN)
+                    if (tempZona.isNaN() || tempAgua.isNaN() || ph.isNaN()) {
+                        Log.e("DashboarVM", "Los valores de telemetría no son números")
+                    } else {
+                        val lectura = Telemetry(tempAgua, tempZona, ph)
 
-                    _telemetries.value = _telemetries.value.toMutableMap().apply {
-                        put(unidadId, lectura)
+                        _telemetries.value = _telemetries.value.toMutableMap().apply {
+                            put(unidadId, lectura)
+                        }
+
+                        Log.d("DashboardVM", "Telemetría actualizada para unidad $unidadId")
                     }
-
-                    Log.d("DashboardVM", "Telemetría actualizada para unidad $unidadId")
                 } catch (e: Exception) {
                     Log.e("DashboardVM", "Error al parsear telemetría: $payload", e)
                 }
