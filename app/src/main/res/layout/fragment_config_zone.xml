@@ -36,7 +36,7 @@
             android:id="@+id/tvHumedad"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Humedad"
+            android:text="Humedad: --"
             android:textSize="16sp"
             android:textStyle="bold"
             android:padding="8dp"

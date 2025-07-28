@@ -116,7 +116,7 @@ class TankConfigFragment : Fragment() {
         spinnerTipoFrecuencia.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p: AdapterView<*>, view: View?, pos: Int, id: Long) {
                 val selected = p.getItemAtPosition(pos).toString()
-                val enabled = selected == "Días de semana"
+                val enabled = selected == "Dias de semana"
                 checkboxesDias.forEach { it.isEnabled = enabled }
             }
             override fun onNothingSelected(p0: AdapterView<*>?) {}

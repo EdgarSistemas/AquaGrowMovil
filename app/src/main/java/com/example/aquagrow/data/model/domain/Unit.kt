@@ -69,5 +69,7 @@ data class ProgramacionAlimentacion (
 data class Telemetry(
     val tempZona: Double,
     val tempAgua: Double,
-    val ph: Double
+    val ph: Double,
+    val humedad: Double?,
+    val nivel: Double?
 )

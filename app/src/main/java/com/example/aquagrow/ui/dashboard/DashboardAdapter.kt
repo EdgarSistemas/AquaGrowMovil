@@ -43,9 +43,9 @@ class DashboardAdapter(
         holder.tvUnitName.text = unit.nombre
 
         val telem = telemetryMap[unit.id_unidad]
-        holder.tvTemperature.text = "${telem?.tempAgua ?: "--"}°C"
-        holder.tvHumidity.text = "${telem?.tempZona ?: "--"}°C"
-        holder.tvPh.text = "${telem?.ph ?: "--"}"
+        holder.tvTemperature.text = "${telem?.tempZona ?: "--"}°C"
+        holder.tvHumidity.text = "${telem?.tempAgua ?: "--"}°C"
+        holder.tvPh.text = "${telem?.humedad ?: "--"}"
     }
 
     override fun getItemCount(): Int = units.size

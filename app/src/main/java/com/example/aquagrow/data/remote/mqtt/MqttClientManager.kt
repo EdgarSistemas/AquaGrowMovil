@@ -11,8 +11,8 @@ import java.nio.charset.StandardCharsets
 object MqttClientManager {
     private var mqttClient: Mqtt3AsyncClient? = null
 
-    // private const val BROKER_HOST = "4e1f320a15b442f09cbd54df897c263d.s1.eu.hivemq.cloud"
-    private const val BROKER_HOST = "8cc34711662e4d5f82972c682f00e961.s1.eu.hivemq.cloud"
+    private const val BROKER_HOST = "4e1f320a15b442f09cbd54df897c263d.s1.eu.hivemq.cloud"
+    //private const val BROKER_HOST = "8cc34711662e4d5f82972c682f00e961.s1.eu.hivemq.cloud"
     private const val BROKER_PORT = 8883
     private const val USERNAME = "Jose_2003"
     private const val PASSWORD = "Jose_2003"

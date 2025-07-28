@@ -56,6 +56,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun setBottomNavigationSelected(moduleName: String) {
+        val permissions = SessionManager.getPermissions()
+        val index = permissions.indexOfFirst { it.nombre_modulo.equals(moduleName, ignoreCase = true) }
+        if (index >= 0) {
+            bottomNavigation.selectedItemId = index
+        }
+    }
+
     private fun setupBottomNavigation() {
         val permissions = SessionManager.getPermissions()
 
@@ -70,7 +78,7 @@ class MainActivity : AppCompatActivity() {
             )
             menuItem.icon = getIconForModule(permission.icono)
         }
-
+        bottomNavigation.labelVisibilityMode = BottomNavigationView.LABEL_VISIBILITY_LABELED
         bottomNavigation.setOnNavigationItemSelectedListener { item ->
             val position = item.itemId
             if (position < permissions.size) {

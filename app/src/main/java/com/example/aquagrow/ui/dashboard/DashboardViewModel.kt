@@ -87,7 +87,9 @@ class DashboardViewModel(
                     val lectura = Telemetry(
                         tempAgua = json.optDouble("tempAgua", -1.0),
                         tempZona = json.optDouble("tempZona", -1.0),
-                        ph = json.optDouble("ph", -1.0)
+                        ph = json.optDouble("ph", -1.0),
+                        humedad = json.optDouble("humedad", -1.0),
+                        nivel = json.optDouble("distancia", -1.0)
                     )
                     _telemetries.value = _telemetries.value.toMutableMap().apply {
                         put(unidadId, lectura)
@@ -112,11 +114,13 @@ class DashboardViewModel(
                     val json = JSONObject(payload)
                     val tempAgua = json.optDouble("tempAgua", Double.NaN)
                     val tempZona = json.optDouble("tempZona", Double.NaN)
+                    val humedad = json.optDouble("humedad", Double.NaN)
                     val ph = json.optDouble("ph", Double.NaN)
+                    val distancia = json.optDouble("distancia", Double.NaN)
                     if (tempZona.isNaN() || tempAgua.isNaN() || ph.isNaN()) {
                         Log.e("DashboarVM", "Los valores de telemetría no son números")
                     } else {
-                        val lectura = Telemetry(tempAgua, tempZona, ph)
+                        val lectura = Telemetry(tempAgua, tempZona, ph, humedad, distancia)
 
                         _telemetries.value = _telemetries.value.toMutableMap().apply {
                             put(unidadId, lectura)

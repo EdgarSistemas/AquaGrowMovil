@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.DisenioAPP" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.DisenioAPP" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="windowSplashScreenBackground">@color/white</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/aquagrow_logo</item>
+        <item name="windowSplashScreenAnimationDuration">5000</item>
+    </style>
 
     <style name="MyButtonStyle" parent="Widget.MaterialComponents.Button">
         <!-- Color de la barra de estado -->

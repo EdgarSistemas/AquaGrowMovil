@@ -215,7 +215,7 @@ class TankConfigViewModel(
         MqttCallbackBus.register { receivedTopic, payload ->
             if (receivedTopic == topic) {
                 try {
-                    val json = org.json.JSONObject(payload)
+                    val json = JSONObject(payload)
                     val temp = json.optDouble("tempAgua", Double.NaN)
                     val ph = json.optDouble("ph", Double.NaN)
                     val nivel = json.optDouble("distancia", Double.NaN)

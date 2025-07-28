@@ -91,7 +91,7 @@
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:src="@drawable/ic_ph"
+                    android:src="@drawable/baseline_water_24"
                     android:contentDescription="pH del agua"/>
 
                 <TextView

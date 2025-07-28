@@ -22,7 +22,9 @@ import com.example.aquagrow.data.local.SessionManager
 import com.example.aquagrow.data.model.domain.Unit
 import com.example.aquagrow.ui.assignUnit.AdminUnitViewModel
 import com.example.aquagrow.ui.assignUnit.AssignUnitFragment
+import com.example.aquagrow.ui.main.MainActivity
 import com.example.aquagrow.ui.unit.detail.UnitDetailFragment
+import com.example.aquagrow.util.UnidadCache
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
@@ -93,6 +95,7 @@ class DashboardFragment : Fragment() {
                                 showLoading(false)
                                 if (state.units.isNotEmpty()) {
                                     adapter.updateList(state.units)
+                                    UnidadCache.setUnidades(state.units)
                                     rvUnits.visibility = View.VISIBLE
                                     tvEmptyState.visibility = View.GONE
                                 } else {
@@ -130,16 +133,17 @@ class DashboardFragment : Fragment() {
         adminUnitViewModel.selectUnit(unit)
 
         val fragment = if (tipoUsuario == "Administrador") {
+            (activity as? MainActivity)?.setBottomNavigationSelected("Asignacion unidades")
             AssignUnitFragment()
         } else {
+            (activity as? MainActivity)?.setBottomNavigationSelected("Unidades")
             UnitDetailFragment.newInstance(unit.id_unidad)
         }
-        Log.e("DashboardFragment", "Ya pase el if")
+
         parentFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, fragment)
             .addToBackStack(null)
             .commit()
-        Log.e("DashboardFragment", "Ya los sobrepase")
     }
 
     private fun showLoading(show: Boolean) {
